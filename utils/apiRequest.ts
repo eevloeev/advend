@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios"
 
 const apiRequest = (config: AxiosRequestConfig) =>
   axios({
-    baseURL: "http://localhost:3000/api/v1/",
+    baseURL: `http://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/v1/`,
     ...config,
   })
 
