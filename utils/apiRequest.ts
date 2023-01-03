@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios"
 
 const apiRequest = (config: AxiosRequestConfig) =>
   axios({
-    baseURL: `${process.env.API_URL}/api/v1/`,
+    baseURL: `${window?.location?.origin}/api/v1/`,
     ...config,
   })
 

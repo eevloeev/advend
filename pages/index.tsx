@@ -30,6 +30,7 @@ import {
 } from "@mui/icons-material"
 import { signIn, signOut, useSession } from "next-auth/react"
 
+import AdvendLogo from "public/assets/images/advend-logo.png"
 import FeaturesIllustration from "public/assets/images/FeaturesIllustration.jpg"
 import Head from "next/head"
 import HeroImage from "public/assets/images/hero.svg"
@@ -142,9 +143,9 @@ export default function Home() {
         <AppBar position="static">
           <Container>
             <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {projectTitle}
-              </Typography>
+              <Box sx={{ flexGrow: 1 }}>
+                <Image alt={projectTitle} src={AdvendLogo} height={30} />
+              </Box>
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 {pages.map((page) => (
                   <Button
