@@ -18,7 +18,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const candidate = await domains.findOne({
     domain,
-    owner: session.user?.email,
   })
 
   if (candidate) {
