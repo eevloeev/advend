@@ -2,7 +2,7 @@
   alert(1)
 
   var id = window.advend
-  fetch("http://localhost:3000/api/v1/domains/" + id)
+  fetch("https://advend.vercel.app/api/v1/domains/" + id)
     .then(function (response) {
       console.log(response)
 

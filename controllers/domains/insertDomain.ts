@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     owner: session.user?.email,
     trafficIncoming: false,
     trafficOutgoing: false,
-    isHttps: false,
+    isHttps: true,
     title: "My favorite site",
     description: "The whole world will know about my site!",
     style: 1,
