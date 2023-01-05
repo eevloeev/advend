@@ -28,12 +28,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       owner: doc?.owner,
       trafficIncoming: doc?.trafficIncoming,
       trafficOutgoing: doc?.trafficOutgoing,
+      isHttps: doc?.isHttps,
+      title: doc?.title,
+      description: doc?.description,
+      style: doc?.style,
     }
   } else {
     docDTO = {
       id: doc?._id,
       trafficIncoming: doc?.trafficIncoming,
       trafficOutgoing: doc?.trafficOutgoing,
+      isHttps: doc?.isHttps,
+      title: doc?.title,
+      description: doc?.description,
+      style: doc?.style,
     }
   }
 

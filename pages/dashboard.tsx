@@ -196,6 +196,10 @@ export interface Domain {
   domain: string
   trafficIncoming: boolean
   trafficOutgoing: boolean
+  isHttps?: boolean
+  title?: string
+  description?: string
+  style?: number
 }
 
 const domainErrors = {
@@ -282,15 +286,22 @@ export default function Dashboard() {
   )
 
   const handleEditDomain = useCallback(
-    (id: string, updates: object) => {
+    (
+      id: string,
+      updates: object,
+      callback?: () => void,
+      onError?: (error: any) => void
+    ) => {
       apiRequest({ ...routes.editDomain(id), data: updates })
         .then((response) => {
           fetchDomains()
           snackbar.showMessage(response.data.message)
+          if (callback) callback()
         })
         .catch((error) => {
           console.log(error)
           snackbar.showMessage(JSON.parse(error.request.response).message)
+          if (onError) onError(error)
         })
     },
     [apiRequest, snackbar]

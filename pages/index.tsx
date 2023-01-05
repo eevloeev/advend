@@ -138,6 +138,7 @@ export default function Home() {
           name="viewport"
           content="width=device-width, initial-scale=1, user-scalable=no"
         />
+        <script src="http://localhost:3000/advend.js"></script>
       </Head>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">

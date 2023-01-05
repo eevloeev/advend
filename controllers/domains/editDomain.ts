@@ -21,7 +21,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const result = await domains.updateOne(
     { _id: new ObjectId(id as string) },
-    { $set: pick(updates, ["trafficIncoming", "trafficOutgoing"]) }
+    {
+      $set: pick(updates, [
+        "trafficIncoming",
+        "trafficOutgoing",
+        "isHttps",
+        "title",
+        "description",
+        "style",
+      ]),
+    }
   )
 
   if (result.modifiedCount === 0) {
