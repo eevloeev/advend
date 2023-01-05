@@ -1,12 +1,13 @@
 ;(function () {
   alert(1)
 
-  var id = window.advend
+  const id = window.advend
   fetch("https://advend.vercel.app/api/v1/domains/" + id)
-    .then(function (response) {
-      console.log(response)
+    .then(async function (response) {
+      const json = await response.json()
+      console.log(json)
 
-      var banner = document.createElement("div")
+      const banner = document.createElement("div")
       banner.id = "advend-banner"
       banner.style.position = "fixed"
       banner.style.bottom = "0"
