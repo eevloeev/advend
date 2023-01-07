@@ -3,16 +3,17 @@ const abortController = new AbortController()
 
 import {
   Assignment as AssignmentIcon,
+  Backup as BackupIcon,
   BarChart as BarChartIcon,
   ChevronLeft as ChevronLeftIcon,
+  CloudDownload as CloudDownloadIcon,
+  Cloud as CloudIcon,
   Dashboard as DashboardIcon,
-  Group as GroupIcon,
   Layers as LayersIcon,
   Menu as MenuIcon,
+  Mouse as MouseIcon,
   People as PeopleIcon,
-  Sell as SellIcon,
   ShoppingCart as ShoppingCartIcon,
-  Visibility as VisibilityIcon,
 } from "@mui/icons-material"
 import {
   Avatar,
@@ -51,28 +52,7 @@ import apiRequest from "utils/apiRequest"
 import routes from "const/routes"
 import { useSnackbar } from "material-ui-snackbar-provider"
 
-const stats = [
-  {
-    name: "Visitors",
-    value: "1 000",
-    icon: <VisibilityIcon />,
-  },
-  {
-    name: "Members",
-    value: "100",
-    icon: <GroupIcon />,
-  },
-  {
-    name: "Orders",
-    value: "250",
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    name: "Income",
-    value: "$500",
-    icon: <SellIcon />,
-  },
-]
+const DRAWER_IS_VISIBLE = false
 
 const MainListItems = (
   <>
@@ -223,6 +203,28 @@ export default function Dashboard() {
   } = useForm<FormInputs>()
   const snackbar = useSnackbar()
   const [domains, setDomains] = useState<Domain[]>([])
+  const [stats, setStats] = useState({
+    totalDomains: {
+      name: "Total domains",
+      value: "",
+      icon: <CloudIcon />,
+    },
+    withIncomingTraffic: {
+      name: "With incoming traffic",
+      value: "",
+      icon: <CloudDownloadIcon />,
+    },
+    withOutgoingTraffic: {
+      name: "With outgoing traffic",
+      value: "",
+      icon: <BackupIcon />,
+    },
+    totalClicks: {
+      name: "Total clicks",
+      value: "",
+      icon: <MouseIcon />,
+    },
+  })
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     apiRequest({ ...routes.insertDomain, data })
@@ -264,6 +266,30 @@ export default function Dashboard() {
     apiRequest(routes.getDomains)
       .then((response) => {
         setDomains(response.data.domains)
+        setStats((prevState) => ({
+          totalDomains: {
+            ...prevState.totalDomains,
+            value: response.data.domains.length,
+          },
+          withIncomingTraffic: {
+            ...prevState.withIncomingTraffic,
+            value: response.data.domains.filter(
+              (d: Domain) => d.trafficIncoming
+            ).length,
+          },
+          withOutgoingTraffic: {
+            ...prevState.withOutgoingTraffic,
+            value: response.data.domains.filter(
+              (d: Domain) => d.trafficOutgoing
+            ).length,
+          },
+          totalClicks: {
+            ...prevState.totalClicks,
+            value: response.data.domains
+              .map((d: Domain) => d.clicks)
+              .reduce((a: number, b: number) => a + b),
+          },
+        }))
       })
       .catch(() => {
         snackbar.showMessage(
@@ -338,18 +364,20 @@ export default function Dashboard() {
               pr: "24px", // keep right padding when drawer closed
             }}
           >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: "36px",
-                ...(open && { display: "none" }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
+            {DRAWER_IS_VISIBLE && (
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: "36px",
+                  ...(open && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography
               component="h1"
               variant="h6"
@@ -367,26 +395,28 @@ export default function Dashboard() {
             </Button>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List component="nav">
-            {MainListItems}
-            <Divider sx={{ my: 1 }} />
-            {SecondaryListItems}
-          </List>
-        </Drawer>
+        {DRAWER_IS_VISIBLE && (
+          <Drawer variant="permanent" open={open}>
+            <Toolbar
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                px: [1],
+              }}
+            >
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List component="nav">
+              {MainListItems}
+              <Divider sx={{ my: 1 }} />
+              {SecondaryListItems}
+            </List>
+          </Drawer>
+        )}
         <Box
           component="main"
           sx={{
@@ -422,25 +452,86 @@ export default function Dashboard() {
               </Grid>
             </Grid>
             <Grid container spacing={3} sx={{ py: 2 }}>
-              {stats.map((stat) => (
-                <Grid item key={stat.name} xs={12} sm={6} md={3}>
-                  <Card>
-                    <CardContent sx={{ display: "flex", flexDirection: "row" }}>
-                      <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
-                        {stat.icon}
-                      </Avatar>
-                      <Box>
-                        <Typography color="text.secondary" component="div">
-                          {stat.name}
-                        </Typography>
-                        <Typography variant="h5" component="div">
-                          {stat.value}
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+              <Grid item key={stats.totalDomains.name} xs={12} sm={6} md={3}>
+                <Card>
+                  <CardContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
+                      {stats.totalDomains.icon}
+                    </Avatar>
+                    <Box>
+                      <Typography color="text.secondary" component="div">
+                        {stats.totalDomains.name}
+                      </Typography>
+                      <Typography variant="h5" component="div">
+                        {stats.totalDomains.value}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid
+                item
+                key={stats.withIncomingTraffic.name}
+                xs={12}
+                sm={6}
+                md={3}
+              >
+                <Card>
+                  <CardContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
+                      {stats.withIncomingTraffic.icon}
+                    </Avatar>
+                    <Box>
+                      <Typography color="text.secondary" component="div">
+                        {stats.withIncomingTraffic.name}
+                      </Typography>
+                      <Typography variant="h5" component="div">
+                        {stats.withIncomingTraffic.value}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid
+                item
+                key={stats.withOutgoingTraffic.name}
+                xs={12}
+                sm={6}
+                md={3}
+              >
+                <Card>
+                  <CardContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
+                      {stats.withOutgoingTraffic.icon}
+                    </Avatar>
+                    <Box>
+                      <Typography color="text.secondary" component="div">
+                        {stats.withOutgoingTraffic.name}
+                      </Typography>
+                      <Typography variant="h5" component="div">
+                        {stats.withOutgoingTraffic.value}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item key={stats.totalClicks.name} xs={12} sm={6} md={3}>
+                <Card>
+                  <CardContent sx={{ display: "flex", flexDirection: "row" }}>
+                    <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
+                      {stats.totalClicks.icon}
+                    </Avatar>
+                    <Box>
+                      <Typography color="text.secondary" component="div">
+                        {stats.totalClicks.name}
+                      </Typography>
+                      <Typography variant="h5" component="div">
+                        {stats.totalClicks.value}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
             <DomainsTable
               rows={domains}

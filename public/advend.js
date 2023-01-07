@@ -52,6 +52,7 @@
             background: linear-gradient(to top, #ccc, #888);
             box-sizing: border-box;
             color: #ffffff;
+            z-index: 1;
           "
         >
           <div
