@@ -196,10 +196,12 @@ export interface Domain {
   domain: string
   trafficIncoming: boolean
   trafficOutgoing: boolean
+  clicks: number
   isHttps?: boolean
   title?: string
   description?: string
-  style?: number
+  color?: string
+  background?: string
 }
 
 const domainErrors = {

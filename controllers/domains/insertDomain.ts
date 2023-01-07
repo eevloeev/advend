@@ -33,7 +33,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     isHttps: true,
     title: "My favorite site",
     description: "The whole world will know about my site!",
-    style: 1,
+    background: "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)",
+    color: "#ffffff",
+    clicks: 0,
   }
   const id = await domains.insertOne(doc)
 

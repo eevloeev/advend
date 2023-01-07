@@ -26,10 +26,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       owner: doc?.owner,
       trafficIncoming: doc?.trafficIncoming,
       trafficOutgoing: doc?.trafficOutgoing,
+      clicks: doc?.clicks,
       isHttps: doc?.isHttps,
       title: doc?.title,
       description: doc?.description,
-      style: doc?.style,
+      background: doc?.background,
+      color: doc?.color,
     })
   )
 

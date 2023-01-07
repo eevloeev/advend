@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Chip,
   Container,
   Dialog,
@@ -13,8 +14,6 @@ import {
   IconButton,
   Link,
   Paper,
-  Radio,
-  RadioGroup,
   Switch,
   Table,
   TableBody,
@@ -45,11 +44,17 @@ const BANNER_DESCRIPTION_LIMIT = 120
 const bannerStyles = [
   {},
   {
-    backgroundImage:
-      "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)",
+    background: "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)",
+    color: "#ffffff",
   },
-  { backgroundImage: "linear-gradient(to top, #c471f5 0%, #fa71cd 100%)" },
-  { backgroundImage: "linear-gradient(to top, #4481eb 0%, #04befe 100%)" },
+  {
+    background: "linear-gradient(to top, #c471f5 0%, #fa71cd 100%)",
+    color: "#ffffff",
+  },
+  {
+    background: "linear-gradient(to top, #4481eb 0%, #04befe 100%)",
+    color: "#000000",
+  },
 ]
 
 interface HeadCell {
@@ -74,6 +79,11 @@ const headCells: HeadCell[] = [
     id: "trafficOutgoing",
     disablePadding: false,
     label: "Outgoing traffic",
+  },
+  {
+    id: "clicks",
+    disablePadding: false,
+    label: "Clicks",
   },
 ]
 
@@ -112,7 +122,7 @@ export default function DomainsTable(props: DomainTableProps) {
   const { rows, handleClickOpen, handleDeleteDomain, handleEditDomain } = props
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [customizableId, setCustomizableId] = useState("")
+  const [activeId, setActiveId] = useState("")
   const [domain, setDomain] = useState("")
   const [isHttps, setIsHttps] = useState(false)
   const [snippetDialogIsOpen, setSnippetDialogIsOpen] = useState(false)
@@ -124,7 +134,8 @@ export default function DomainsTable(props: DomainTableProps) {
     "Consectetur adipisicing elit. Asperiores reiciendis nemo, sint laborum beatae quidem repellendus quae"
   )
   const [isBannerVisible, setIsBannerVisible] = useState(true)
-  const [bannerStyle, setBannerStyle] = useState(1)
+  const [bannerColor, setBannerColor] = useState("#ffffff")
+  const [bannerBackground, setBannerBackground] = useState("#000000")
 
   const handleBannerTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setBannerTitle(event.target.value)
@@ -193,8 +204,9 @@ export default function DomainsTable(props: DomainTableProps) {
     [isHttps, domain]
   )
 
-  const handleBannerStyleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setBannerStyle(parseInt(event.target.value))
+  const handleBannerStyleChange = (index: number) => {
+    setBannerColor(bannerStyles[index].color ?? "#ffffff")
+    setBannerBackground(bannerStyles[index].background ?? "#000000")
   }
 
   const handleIsHttpsChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -203,11 +215,12 @@ export default function DomainsTable(props: DomainTableProps) {
 
   const handleCustomizationSubmit = () => {
     handleEditDomain(
-      customizableId,
+      activeId,
       {
         title: bannerTitle,
         description: bannerDescription,
-        style: bannerStyle,
+        background: bannerBackground,
+        color: bannerColor,
         isHttps,
       },
       () => {
@@ -228,15 +241,13 @@ export default function DomainsTable(props: DomainTableProps) {
           <Box
             ref={refSnippet}
             dangerouslySetInnerHTML={{
-              __html: `<pre><span style="color: #008000">&lt;!-- ADVEND SCRIPT --&gt;</span>
-&lt;script&gt;
-(<span style="color:#0000ff">function</span>(a,d,v,e){
-  e.advend=v
-  <span style="color:#0000ff">var</span> n=a.createElement(d);
-  n.src=<span style="color:#a31515">&#39;${window?.location?.origin}/advend.js&#39;</span>;
-  a.body.prepend(n);
-})(document,<span style="color:#a31515">&#39;script&#39;</span>,<span style="color:#a31515">&#39;${domain}&#39;</span>,window);
-&lt;/script&gt;</pre>`,
+              __html: `<pre style="font-size: 12px;">
+<code style="color:rgb(0, 0, 0); font-weight:400;background-color:rgb(255, 255, 255);background:rgb(255, 255, 255);display:block;padding: .5em;"><span style="color:rgb(0, 0, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&lt;<span style="color:rgb(0, 0, 136); font-weight:400;background:rgba(0, 0, 0, 0);">script</span>&gt;</span><span style="color:rgb(0, 0, 0); font-weight:400;background:rgba(0, 0, 0, 0);">
+  <span style="color:rgb(102, 0, 102); font-weight:400;background:rgba(0, 0, 0, 0);">window</span>.advend = {
+    <span style="color:rgb(102, 0, 102); font-weight:400;background:rgba(0, 0, 0, 0);">id</span>: <span style="color:rgb(0, 136, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&#x27;${activeId}&#x27;</span>
+  }
+</span><span style="color:rgb(0, 0, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&lt;/<span style="color:rgb(0, 0, 136); font-weight:400;background:rgba(0, 0, 0, 0);">script</span>&gt;</span>
+<span style="color:rgb(0, 0, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&lt;<span style="color:rgb(0, 0, 136); font-weight:400;background:rgba(0, 0, 0, 0);">script</span> <span style="color:rgb(102, 0, 102); font-weight:400;background:rgba(0, 0, 0, 0);">src</span>=<span style="color:rgb(0, 136, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&quot;https://advend.vercel.app/advend.js&quot;</span> <span style="color:rgb(102, 0, 102); font-weight:400;background:rgba(0, 0, 0, 0);">async</span>&gt;</span><span style="color:rgb(0, 0, 0); font-weight:400;background:rgba(0, 0, 0, 0);">&lt;/<span style="color:rgb(0, 0, 136); font-weight:400;background:rgba(0, 0, 0, 0);">script</span>&gt;</span></code></pre>`,
             }}
           />
         </DialogContent>
@@ -284,16 +295,14 @@ export default function DomainsTable(props: DomainTableProps) {
             helperText={`Max. ${BANNER_DESCRIPTION_LIMIT} characters`}
             margin="normal"
           />
-          <FormLabel>Style</FormLabel>
-          <RadioGroup
-            row
-            value={bannerStyle}
-            onChange={handleBannerStyleChange}
-          >
-            <FormControlLabel value="1" control={<Radio />} label="Pink" />
-            <FormControlLabel value="2" control={<Radio />} label="Purple" />
-            <FormControlLabel value="3" control={<Radio />} label="Blue" />
-          </RadioGroup>
+          <FormLabel>Apply style</FormLabel>
+          <Box sx={{ mt: 1 }}>
+            <ButtonGroup size="small">
+              <Button onClick={() => handleBannerStyleChange(1)}>Pink</Button>
+              <Button onClick={() => handleBannerStyleChange(2)}>Purple</Button>
+              <Button onClick={() => handleBannerStyleChange(3)}>Blue</Button>
+            </ButtonGroup>
+          </Box>
           <Box
             sx={{
               mt: 2,
@@ -340,7 +349,7 @@ export default function DomainsTable(props: DomainTableProps) {
                 px: 2,
                 maxWidth: "100%",
                 height: isBannerVisible ? 120 : 0,
-                ...bannerStyles[bannerStyle],
+                background: bannerBackground,
                 overflow: "hidden",
                 boxSizing: "border-box",
                 display: "flex",
@@ -362,7 +371,7 @@ export default function DomainsTable(props: DomainTableProps) {
                   textOverflow: "ellipsis",
                   textDecoration: "none",
                 }}
-                color={bannerStyle === 3 ? "#ffffff" : "#000000"}
+                color={bannerColor}
               >
                 {bannerTitle.slice(0, BANNER_TITLE_LIMIT).trim()}
               </Link>
@@ -378,7 +387,7 @@ export default function DomainsTable(props: DomainTableProps) {
                   overflow: "hidden",
                   textDecoration: "none",
                 }}
-                color={bannerStyle === 3 ? "#ffffff" : "#000000"}
+                color={bannerColor}
               >
                 {bannerDescription.slice(0, BANNER_DESCRIPTION_LIMIT).trim()}
               </Link>
@@ -446,16 +455,21 @@ export default function DomainsTable(props: DomainTableProps) {
                               }}
                             />
                           </TableCell>
+                          <TableCell>{row?.clicks}</TableCell>
                           <TableCell align="right">
                             <Tooltip title="Customize banner">
                               <IconButton
                                 onClick={() => {
-                                  setCustomizableId(row.id)
+                                  setActiveId(row.id)
                                   setDomain(row.domain)
+                                  setIsBannerVisible(true)
                                   setIsHttps(row.isHttps ?? false)
                                   setBannerTitle(row?.title ?? "")
                                   setBannerDescription(row?.description ?? "")
-                                  setBannerStyle(row?.style ?? 1)
+                                  setBannerColor(row?.color ?? "#ffffff")
+                                  setBannerBackground(
+                                    row?.background ?? "#000000"
+                                  )
                                   handleCustomizeDialogOpen()
                                 }}
                               >
@@ -465,6 +479,7 @@ export default function DomainsTable(props: DomainTableProps) {
                             <Tooltip title="Get code snippet">
                               <IconButton
                                 onClick={() => {
+                                  setActiveId(row.id)
                                   setDomain(row.domain)
                                   handleSnippetDialogOpen()
                                 }}

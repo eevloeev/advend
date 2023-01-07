@@ -31,17 +31,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       isHttps: doc?.isHttps,
       title: doc?.title,
       description: doc?.description,
-      style: doc?.style,
+      background: doc?.background,
+      color: doc?.color,
+      clicks: doc?.clicks,
     }
   } else {
     docDTO = {
       id: doc?._id,
+      domain: doc?.domain,
       trafficIncoming: doc?.trafficIncoming,
       trafficOutgoing: doc?.trafficOutgoing,
       isHttps: doc?.isHttps,
       title: doc?.title,
       description: doc?.description,
-      style: doc?.style,
+      background: doc?.background,
+      color: doc?.color,
     }
   }
 

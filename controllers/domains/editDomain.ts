@@ -28,7 +28,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         "isHttps",
         "title",
         "description",
-        "style",
+        "background",
+        "color",
       ]),
     }
   )
