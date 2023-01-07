@@ -18,7 +18,6 @@
       const { trafficOutgoing } = await response.json()
 
       if (trafficOutgoing) {
-        // Реализовать эндпоинт для получения списка рекламирующихся сайтов
         fetch(`${API_BASE_URL}/banners?id=${window.advend.id}`)
           .then(async function (response) {
             const data = await response.json()
