@@ -6,8 +6,8 @@ import {
   Backup as BackupIcon,
   BarChart as BarChartIcon,
   ChevronLeft as ChevronLeftIcon,
-  CloudDownload as CloudDownloadIcon,
   Cloud as CloudIcon,
+  CloudDownload as CloudDownloadIcon,
   Dashboard as DashboardIcon,
   Layers as LayersIcon,
   Menu as MenuIcon,
@@ -28,6 +28,7 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  Drawer as MuiDrawer,
   Grid,
   IconButton,
   List,
@@ -35,22 +36,21 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Drawer as MuiDrawer,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material"
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar"
-import { SubmitHandler, useForm } from "react-hook-form"
-import { ThemeProvider, createTheme, styled } from "@mui/material/styles"
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import { signOut, useSession } from "next-auth/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
 
 import DomainsTable from "components/DomainsTable"
-import Head from "next/head"
-import apiRequest from "utils/apiRequest"
 import routes from "const/routes"
 import { useSnackbar } from "material-ui-snackbar-provider"
+import Head from "next/head"
+import apiRequest from "utils/apiRequest"
 
 const DRAWER_IS_VISIBLE = false
 
@@ -287,7 +287,7 @@ export default function Dashboard() {
             ...prevState.totalClicks,
             value: response.data.domains
               .map((d: Domain) => d.clicks)
-              .reduce((a: number, b: number) => a + b),
+              .reduce((a: number, b: number) => a + b, 0),
           },
         }))
       })
